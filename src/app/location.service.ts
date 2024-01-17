@@ -20,6 +20,9 @@ export class LocationService {
     let locString = localStorage.getItem(LOCATIONS);
     if (locString)
       this.locations = JSON.parse(locString);
+  }
+
+  loadLocations() {
     for (let loc of this.locations)
       this.location$.next({action: Action.ADD, zipcode: loc});
   }

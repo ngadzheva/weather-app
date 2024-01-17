@@ -26,6 +26,8 @@ export class CurrentConditionsComponent implements OnDestroy {
         this.weatherService.removeCurrentConditions(location.zipcode)
       }
     });
+
+    this.locationService.loadLocations();
   }
 
   ngOnDestroy(): void {
