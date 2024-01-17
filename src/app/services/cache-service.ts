@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EXPIRATION_TIME } from './expiration-time';
+
+import { EXPIRATION_TIME } from '../expiration-time';
 
 @Injectable({
   providedIn: 'root'

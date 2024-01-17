@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-export const LOCATIONS : string = "locations";
+export const LOCATIONS : string = 'locations';
 
 export enum Action { ADD, REMOVE };
 
-interface Location {
+interface LocationProps {
   action: Action;
   zipcode: string;
 }
@@ -14,7 +14,7 @@ interface Location {
 export class LocationService {
 
   locations : string[] = [];
-  private location$ = new Subject<Location>();
+  private location$ = new Subject<LocationProps>();
 
   constructor() {
     let locString = localStorage.getItem(LOCATIONS);
@@ -24,7 +24,7 @@ export class LocationService {
 
   loadLocations() {
     for (let loc of this.locations)
-      this.location$.next({action: Action.ADD, zipcode: loc});
+      this.location$.next({ action: Action.ADD, zipcode: loc });
   }
 
   addLocation(zipcode : string) {
@@ -34,7 +34,7 @@ export class LocationService {
 
     this.locations.push(zipcode);
     localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
-    this.location$.next({action: Action.ADD, zipcode});
+    this.location$.next({ action: Action.ADD, zipcode });
   }
 
   removeLocation(index : number) {
@@ -42,7 +42,7 @@ export class LocationService {
     if (index !== -1){
       this.locations.splice(index, 1);
       localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
-      this.location$.next({action: Action.REMOVE, zipcode});
+      this.location$.next({ action: Action.REMOVE, zipcode });
     }
   }
 

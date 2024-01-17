@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+
 import { CustomTabComponent } from '../custom-tab.component';
 
 @Component({

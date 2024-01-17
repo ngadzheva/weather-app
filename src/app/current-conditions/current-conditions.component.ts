@@ -1,11 +1,12 @@
-import {Component, inject, OnDestroy, Signal} from '@angular/core';
-import {WeatherService} from "../weather.service";
-import {Action, LocationService} from "../location.service";
-import {Router} from "@angular/router";
-import {ConditionsAndZip} from '../conditions-and-zip.type';
+import { Component, inject, OnDestroy, Signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CacheService } from 'app/cache-service';
-import { currentConditionsKey, forecastKey } from 'app/cache-key.utility';
+
+import { ConditionsAndZip } from '../conditions-and-zip.type';
+import { WeatherService } from '../services/weather.service';
+import { Action, LocationService } from '../services/location.service';
+import { CacheService } from '../services/cache-service';
+import { currentConditionsKey, forecastKey } from '../utils/cache-key.utility';
 
 @Component({
   selector: 'app-current-conditions',
@@ -14,21 +15,21 @@ import { currentConditionsKey, forecastKey } from 'app/cache-key.utility';
 })
 export class CurrentConditionsComponent implements OnDestroy {
 
+  private locationSubscription: Subscription;
   private weatherService = inject(WeatherService);
   private router = inject(Router);
-  protected locationService = inject(LocationService);
   private cacheService = inject(CacheService);
+  protected locationService = inject(LocationService);
   protected currentConditionsByZip: Signal<ConditionsAndZip[]> = this.weatherService.getCurrentConditions();
-  private locationSubscription: Subscription;
 
   constructor() {
     this.locationSubscription = this.locationService.getLocation().subscribe((location) => {
       if (location.action === Action.ADD) {
-        this.weatherService.addCurrentConditions(location.zipcode)
+        this.weatherService.addCurrentConditions(location.zipcode);
       } else if (location.action === Action.REMOVE) {
         const { zipcode } = location;
 
-        this.weatherService.removeCurrentConditions(zipcode)
+        this.weatherService.removeCurrentConditions(zipcode);
         this.cacheService.removeItem(currentConditionsKey(zipcode));
         this.cacheService.removeItem(forecastKey(zipcode));
       }

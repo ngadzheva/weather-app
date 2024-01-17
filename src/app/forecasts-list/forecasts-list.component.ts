@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import {WeatherService} from '../weather.service';
-import {ActivatedRoute} from '@angular/router';
-import {Forecast} from './forecast.type';
-import { CacheService } from 'app/cache-service';
-import { forecastKey } from 'app/cache-key.utility';
+import { ActivatedRoute } from '@angular/router';
+
+import { Forecast } from './forecast.type';
+import { WeatherService } from '../services/weather.service';
+import { CacheService } from '../services/cache-service';
+import { forecastKey } from '../utils/cache-key.utility';
 
 @Component({
   selector: 'app-forecasts-list',
@@ -15,7 +16,11 @@ export class ForecastsListComponent {
   zipcode: string;
   forecast: Forecast;
 
-  constructor(protected weatherService: WeatherService, route : ActivatedRoute, private cacheService: CacheService) {
+  constructor(
+    protected weatherService: WeatherService,
+    route : ActivatedRoute,
+    private cacheService: CacheService
+  ) {
     route.params.subscribe(params => {
       this.zipcode = params['zipcode'];
       this.loadForecast();
@@ -28,11 +33,10 @@ export class ForecastsListComponent {
     if (cachedForecast) {
       this.forecast = cachedForecast.data;
     } else {
-      this.weatherService.getForecast(this.zipcode)
-        .subscribe(data => {
-          this.forecast = data;
-          this.cacheService.setItem(forecastKey(this.zipcode), JSON.stringify(data));
-        });
+      this.weatherService.getForecast(this.zipcode).subscribe(data => {
+        this.forecast = data;
+        this.cacheService.setItem(forecastKey(this.zipcode), JSON.stringify(data));
+      });
     }
   }
 }
