@@ -5,6 +5,8 @@ import {HttpClient} from '@angular/common/http';
 import {CurrentConditions} from './current-conditions/current-conditions.type';
 import {ConditionsAndZip} from './conditions-and-zip.type';
 import {Forecast} from './forecasts-list/forecast.type';
+import { CacheService } from './cache-service';
+import { currentConditionsKey } from './cache-key.utility';
 
 @Injectable()
 export class WeatherService {
@@ -14,12 +16,21 @@ export class WeatherService {
   static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
   private currentConditions = signal<ConditionsAndZip[]>([]);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private cacheService: CacheService) { }
 
   addCurrentConditions(zipcode: string): void {
-    // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
-    this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
-      .subscribe(data => this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data}]));
+    const cachedConditions = this.cacheService.getItem(currentConditionsKey(zipcode));
+
+    if (cachedConditions) {
+      this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data: cachedConditions.data }]);
+    } else {
+      // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
+      this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
+        .subscribe(data => {
+          this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data}]);
+          this.cacheService.setItem(currentConditionsKey(zipcode), JSON.stringify(data));
+        });
+    }
   }
 
   removeCurrentConditions(zipcode: string) {
@@ -58,5 +69,4 @@ export class WeatherService {
     else
       return WeatherService.ICON_URL + "art_clear.png";
   }
-
 }

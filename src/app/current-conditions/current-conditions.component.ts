@@ -4,6 +4,8 @@ import {Action, LocationService} from "../location.service";
 import {Router} from "@angular/router";
 import {ConditionsAndZip} from '../conditions-and-zip.type';
 import { Subscription } from 'rxjs';
+import { CacheService } from 'app/cache-service';
+import { currentConditionsKey, forecastKey } from 'app/cache-key.utility';
 
 @Component({
   selector: 'app-current-conditions',
@@ -15,6 +17,7 @@ export class CurrentConditionsComponent implements OnDestroy {
   private weatherService = inject(WeatherService);
   private router = inject(Router);
   protected locationService = inject(LocationService);
+  private cacheService = inject(CacheService);
   protected currentConditionsByZip: Signal<ConditionsAndZip[]> = this.weatherService.getCurrentConditions();
   private locationSubscription: Subscription;
 
@@ -23,7 +26,11 @@ export class CurrentConditionsComponent implements OnDestroy {
       if (location.action === Action.ADD) {
         this.weatherService.addCurrentConditions(location.zipcode)
       } else if (location.action === Action.REMOVE) {
-        this.weatherService.removeCurrentConditions(location.zipcode)
+        const { zipcode } = location;
+
+        this.weatherService.removeCurrentConditions(zipcode)
+        this.cacheService.removeItem(currentConditionsKey(zipcode));
+        this.cacheService.removeItem(forecastKey(zipcode));
       }
     });
 
