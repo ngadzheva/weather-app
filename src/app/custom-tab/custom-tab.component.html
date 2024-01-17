@@ -1,0 +1,9 @@
+<div>
+    <ul class="tab">
+        <li class="title" *ngFor="let tab of tabs; index as i" (click)="selectTab(tab)">
+          {{tab.tabTitle}}
+          <span click-stop-propagation class="close" (click)="removeTab(i)">&times;</span>
+        </li>
+    </ul>
+    <ng-content></ng-content>
+</div>

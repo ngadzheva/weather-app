@@ -1,0 +1,25 @@
+.tab {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.title {
+    background-color: #617aa0;
+    color: white;
+    padding: 15px;
+    border: 1px solid black;
+    width: fit-content;
+    margin-right: 15px;
+}
+
+.title:hover {
+    cursor: pointer;
+}
+
+.close {
+    cursor: pointer;
+    color: white;
+    margin-left: 15px;
+}

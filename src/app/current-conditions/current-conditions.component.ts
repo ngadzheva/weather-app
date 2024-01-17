@@ -35,4 +35,8 @@ export class CurrentConditionsComponent implements OnDestroy {
   showForecast(zipcode : string){
     this.router.navigate(['/forecast', zipcode])
   }
+
+  removeLocation(index: number) {
+    this.locationService.removeLocation(index);
+  }
 }
