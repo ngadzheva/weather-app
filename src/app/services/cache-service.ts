@@ -16,7 +16,7 @@ export class CacheService {
 
   getItem(key: string) {
     const cachedItem = JSON.parse(localStorage.getItem(key));
-    const expired = new Date(Date.parse(cachedItem.expiration)) <= new Date();
+    const expired = cachedItem && new Date(Date.parse(cachedItem.expiration)) <= new Date();
 
     return !expired ? cachedItem : null;
   }
