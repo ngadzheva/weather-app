@@ -23,6 +23,7 @@ export class CurrentConditionsComponent implements OnDestroy {
   protected currentConditionsByZip: Signal<ConditionsAndZip[]> = this.weatherService.getCurrentConditions();
 
   constructor() {
+    // Subscribe to the locations observable and listen for its events
     this.locationSubscription = this.locationService.getLocation().subscribe((location) => {
       if (location.action === Action.ADD) {
         this.weatherService.addCurrentConditions(location.zipcode);
@@ -30,11 +31,14 @@ export class CurrentConditionsComponent implements OnDestroy {
         const { zipcode } = location;
 
         this.weatherService.removeCurrentConditions(zipcode);
+        // Remove the location from the cache as well
         this.cacheService.removeItem(currentConditionsKey(zipcode));
         this.cacheService.removeItem(forecastKey(zipcode));
       }
     });
 
+    // Load the locations after we have
+    // subscribed to the location observable
     this.locationService.loadLocations();
   }
 
@@ -46,6 +50,8 @@ export class CurrentConditionsComponent implements OnDestroy {
     this.router.navigate(['/forecast', zipcode])
   }
 
+  // Remove location from the list by the index
+  // of the tab which close button is clicked
   removeLocation(index: number) {
     this.locationService.removeLocation(index);
   }

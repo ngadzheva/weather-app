@@ -19,8 +19,12 @@ export class WeatherService {
   constructor(private http: HttpClient, private cacheService: CacheService) { }
 
   addCurrentConditions(zipcode: string): void {
+    // We first search for conditions in the cache
     const cachedConditions = this.cacheService.getItem(currentConditionsKey(zipcode));
 
+    // If there are already saved conditions in the cache for the given zipcode,
+    // we use them for updating the currentConditions array
+    // Otherwise, we fetch the current conditions from the API and update the cache
     if (cachedConditions) {
       this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data: cachedConditions.data }]);
     } else {

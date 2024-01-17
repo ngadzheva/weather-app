@@ -27,6 +27,12 @@ export class ForecastsListComponent {
     });
   }
 
+  /**
+   * Helper method for fetching the 5-day forecast weather
+   * First, we check for stored forecast in the cache
+   * If it is available, we use it for initializing forecast
+   * Otherwise, we fetch the udpated forecast from the API and update the cache
+   */
   private loadForecast() {
     const cachedForecast = this.cacheService.getItem(forecastKey(this.zipcode));
 
