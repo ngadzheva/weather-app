@@ -10,6 +10,7 @@ import { ZipcodeEntryComponent } from './zipcode-entry/zipcode-entry.component';
 import { ForecastsListComponent } from './forecasts-list/forecasts-list.component';
 import { CurrentConditionsComponent } from './current-conditions/current-conditions.component';
 import { MainPageComponent } from './main-page/main-page.component';
+import { MinMaxTemperatureComponent } from './min-max-temperature/min-max-temperature.component';
 import { LocationService } from './services/location.service';
 import { WeatherService } from './services/weather.service';
 import { routing } from './app.routing';
@@ -23,6 +24,7 @@ import { CustomTabModule } from './custom-tab/custom-tab.module';
     ForecastsListComponent,
     CurrentConditionsComponent,
     MainPageComponent,
+    MinMaxTemperatureComponent
   ],
   imports: [
     BrowserModule,

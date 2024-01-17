@@ -1,6 +1,6 @@
 <div class="wrapper">
   <app-custom-tab>
-    <div *ngFor="let location of currentConditionsByZip()"
+    <ng-container *ngFor="let location of currentConditionsByZip()"
       (click)="showForecast(location.zip)"
     >
       <app-custom-tab-body 
@@ -13,8 +13,10 @@
             <h4>Temperatures today:</h4>
             <p>
               Current {{ location.data.main.temp | number:'.0-0' }}
-              - Max {{ location.data.main.temp_max | number:'.0-0' }}
-              - Min {{ location.data.main.temp_min | number:'.0-0' }}
+              <app-min-max-temperature
+                [min]="location.data.main.temp_min"
+                [max]="location.data.main.temp_max"
+              ></app-min-max-temperature>
             </p>
             <p>
               <a [routerLink]="['/forecast', location.zip]">Show 5-day forecast for {{ location.data.name }}</a>
@@ -25,6 +27,6 @@
           </div>
         </div>
       </app-custom-tab-body>
-   </div>
+    </ng-container>
   </app-custom-tab>
 </div>
