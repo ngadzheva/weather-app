@@ -1,3 +1,3 @@
-export const currentConditionsKey = (zipcode: string) => `current-${zipcode}`;
+export const CURRENT_CONDITIONS = 'current';
 
-export const forecastKey = (zipcode: string) => `forecast-${zipcode}`;
+export const FORECAST = 'forecast';

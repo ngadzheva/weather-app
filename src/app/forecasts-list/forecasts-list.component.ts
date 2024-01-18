@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Forecast } from './forecast.type';
 import { WeatherService } from '../services/weather.service';
 import { CacheService } from '../services/cache-service';
-import { forecastKey } from '../utils/cache-key.utility';
+import { FORECAST } from '../utils/cache-key.utility';
 
 @Component({
   selector: 'app-forecasts-list',
@@ -40,14 +40,15 @@ export class ForecastsListComponent {
    * Otherwise, we fetch the udpated forecast from the API and update the cache
    */
   private loadForecast() {
-    const cachedForecast = this.cacheService.getItem(forecastKey(this.zipcode));
+    const cachedForecast = this.cacheService.getItem(FORECAST).find(forecast => forecast.id === this.zipcode);
 
     if (cachedForecast) {
       this.forecast = cachedForecast.data;
     } else {
       this.weatherService.getForecast(this.zipcode).subscribe(data => {
         this.forecast = data;
-        this.cacheService.setItem(forecastKey(this.zipcode), JSON.stringify(data));
+
+        this.cacheService.setItem(FORECAST, JSON.stringify({ id: this.zipcode, data }));
       });
     }
   }

@@ -6,7 +6,8 @@ import { CurrentConditions } from '../current-conditions/current-conditions.type
 import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { Forecast } from '../forecasts-list/forecast.type';
 import { CacheService } from './cache-service';
-import { currentConditionsKey } from '../utils/cache-key.utility';
+import { CURRENT_CONDITIONS } from '../utils/cache-key.utility';
+
 
 @Injectable()
 export class WeatherService {
@@ -15,18 +16,19 @@ export class WeatherService {
   static APPID = '5a4b2d457ecbef9eb2a71e480b947604';
   static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
   private currentConditions = signal<ConditionsAndZip[]>([]);
+  private cachedConditions;
 
   constructor(private http: HttpClient, private cacheService: CacheService) {
     // If there is some cached data, we fetch it and
     // initialize the currentConditions array with it
-    const cachedConditions = this.cacheService.getItems('current');
+    this.cachedConditions = this.cacheService.getItem(CURRENT_CONDITIONS) || [];
 
-    if (cachedConditions) {
-      cachedConditions.forEach(cachedConditions => {
+    if (this.cachedConditions) {
+      this.cachedConditions.forEach(cache => {
         this.currentConditions.update(conditions => {
-          const cachedData = { 
-            zip: cachedConditions.key.split('-')[1],
-            data: cachedConditions.data
+          const cachedData = {
+            zip: cache.id,
+            data: cache.data
           };
 
           return [...conditions, cachedData];
@@ -36,20 +38,20 @@ export class WeatherService {
    }
 
   addCurrentConditions(zipcode: string): void {
-    // We first search for conditions in the cache
-    const cachedConditions = this.cacheService.getItem(currentConditionsKey(zipcode));
+    // We first check for cached conditions
+    const cachedZipConditions = this.cachedConditions.find(conditions => conditions.id === zipcode);
 
     // If there are already saved conditions in the cache for the given zipcode,
     // we use them for updating the currentConditions array
     // Otherwise, we fetch the current conditions from the API and update the cache
-    if (cachedConditions) {
-      this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data: cachedConditions.data }]);
+    if (cachedZipConditions) {
+      this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data: cachedZipConditions.data }]);
     } else {
       // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
       this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
         .subscribe(data => {
           this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data }]);
-          this.cacheService.setItem(currentConditionsKey(zipcode), JSON.stringify(data));
+          this.cacheService.setItem(CURRENT_CONDITIONS, JSON.stringify({ id: zipcode, data }));
         });
     }
   }

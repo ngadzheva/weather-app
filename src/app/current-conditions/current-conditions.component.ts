@@ -6,7 +6,7 @@ import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { WeatherService } from '../services/weather.service';
 import { Action, LocationService } from '../services/location.service';
 import { CacheService } from '../services/cache-service';
-import { currentConditionsKey, forecastKey } from '../utils/cache-key.utility';
+import { CURRENT_CONDITIONS, FORECAST } from '../utils/cache-key.utility';
 
 @Component({
   selector: 'app-current-conditions',
@@ -33,8 +33,8 @@ export class CurrentConditionsComponent implements OnDestroy {
 
         this.weatherService.removeCurrentConditions(zipcode);
         // Remove the location from the cache as well
-        this.cacheService.removeItem(currentConditionsKey(zipcode));
-        this.cacheService.removeItem(forecastKey(zipcode));
+        this.cacheService.removeItem(CURRENT_CONDITIONS, zipcode);
+        this.cacheService.removeItem(FORECAST, zipcode);
       }
     });
 

@@ -12,11 +12,15 @@ export class CacheService {
    * @param value - the data which we will store
    */
   setItem(key: string, value: string) {
-    const data = JSON.parse(value);
+    let data = JSON.parse(value);
+    const cachedData = this.getCachedData(key);
+
     const currentTime = new Date().getTime();
-    const dataWithExpiration = {data, expiration: new Date(currentTime + EXPIRATION_TIME) };
+    data = { ...data, expiration: new Date(currentTime + EXPIRATION_TIME) };
+
+    cachedData.push(data);
   
-    localStorage.setItem(key, JSON.stringify(dataWithExpiration));
+    localStorage.setItem(key, JSON.stringify(cachedData));
   }
 
   /**
@@ -34,34 +38,17 @@ export class CacheService {
   }
 
   /**
-   * Fetch all items from the cache by given key prefix
-   * @param prefix - the key prefix by which we will fetch data from the cache
-   * @returns the not expired items which key start with the given prefix
-   */
-  getItems(prefix: string) {
-    const items = [];
-
-    for(let i = 0; i < localStorage.length; ++i) {
-      let key = localStorage.key(i);
-
-      if (key && key.startsWith(prefix)) {
-        const cachedItem = JSON.parse(localStorage.getItem(key));
-        const expired = cachedItem && new Date(Date.parse(cachedItem.expiration)) <= new Date();
-
-        if (!expired) {
-          items.push({ key, data: cachedItem.data });
-        }
-      }
-    }
-
-    return items;
-  }
-
-  /**
    * Removes item from local storage by key
    * @param key - the key with which the data we want to remove is stored in local storage
    */
-  removeItem(key: string) {
-    localStorage.removeItem(key);
+  removeItem(key: string, id: string) {
+    const cachedData = this.getCachedData(key);
+    const updatedData = cachedData.filter(data => data.id !== id);
+  
+    localStorage.setItem(key, JSON.stringify(updatedData));
+  }
+
+  private getCachedData(key: string) {
+    return JSON.parse(localStorage.getItem(key)) || [];
   }
 }
