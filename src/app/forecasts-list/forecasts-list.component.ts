@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
 import { Forecast } from './forecast.type';
@@ -19,12 +20,17 @@ export class ForecastsListComponent {
   constructor(
     protected weatherService: WeatherService,
     route : ActivatedRoute,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private location: Location
   ) {
     route.params.subscribe(params => {
       this.zipcode = params['zipcode'];
       this.loadForecast();
     });
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   /**

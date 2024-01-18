@@ -15,7 +15,7 @@ import { LocationService } from './services/location.service';
 import { WeatherService } from './services/weather.service';
 import { routing } from './app.routing';
 import { environment } from '../environments/environment';
-import { CustomTabModule } from './custom-tab/custom-tab.module';
+import { UITabsModule } from './ui-tabs/ui-tabs.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +31,7 @@ import { CustomTabModule } from './custom-tab/custom-tab.module';
     FormsModule,
     HttpClientModule,
     RouterModule,
-    CustomTabModule,
+    UITabsModule,
     routing,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
   ],

@@ -56,4 +56,9 @@ export class CurrentConditionsComponent implements OnDestroy {
   removeLocation(index: number) {
     this.locationService.removeLocation(index);
   }
+
+  // Helper method for setting the zipcode to the url hash
+  extractHash(tabTitle: string) {
+    return tabTitle.match(/\(([^)]+)\)/)[1];
+  }
 }

@@ -65,7 +65,6 @@ export class WeatherService {
   }
 
   getCurrentConditions(): Signal<ConditionsAndZip[]> {
-    console.log(this.currentConditions.asReadonly()())
     return this.currentConditions.asReadonly();
   }
 
