@@ -34,6 +34,30 @@ export class CacheService {
   }
 
   /**
+   * Fetch all items from the cache by given key prefix
+   * @param prefix - the key prefix by which we will fetch data from the cache
+   * @returns the not expired items which key start with the given prefix
+   */
+  getItems(prefix: string) {
+    const items = [];
+
+    for(let i = 0; i < localStorage.length; ++i) {
+      let key = localStorage.key(i);
+
+      if (key && key.startsWith(prefix)) {
+        const cachedItem = JSON.parse(localStorage.getItem(key));
+        const expired = cachedItem && new Date(Date.parse(cachedItem.expiration)) <= new Date();
+
+        if (!expired) {
+          items.push({ key, data: cachedItem.data });
+        }
+      }
+    }
+
+    return items;
+  }
+
+  /**
    * Removes item from local storage by key
    * @param key - the key with which the data we want to remove is stored in local storage
    */

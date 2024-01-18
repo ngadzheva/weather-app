@@ -26,7 +26,8 @@ export class CurrentConditionsComponent implements OnDestroy {
     // Subscribe to the locations observable and listen for its events
     this.locationSubscription = this.locationService.getLocation().subscribe((location) => {
       if (location.action === Action.ADD) {
-        this.weatherService.addCurrentConditions(location.zipcode);
+        if (!this.currentConditionsByZip().find(conditions => conditions.zip === location.zipcode))
+          this.weatherService.addCurrentConditions(location.zipcode);
       } else if (location.action === Action.REMOVE) {
         const { zipcode } = location;
 

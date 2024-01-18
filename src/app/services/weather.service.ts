@@ -16,7 +16,24 @@ export class WeatherService {
   static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
   private currentConditions = signal<ConditionsAndZip[]>([]);
 
-  constructor(private http: HttpClient, private cacheService: CacheService) { }
+  constructor(private http: HttpClient, private cacheService: CacheService) {
+    // If there is some cached data, we fetch it and
+    // initialize the currentConditions array with it
+    const cachedConditions = this.cacheService.getItems('current');
+
+    if (cachedConditions) {
+      cachedConditions.forEach(cachedConditions => {
+        this.currentConditions.update(conditions => {
+          const cachedData = { 
+            zip: cachedConditions.key.split('-')[1],
+            data: cachedConditions.data
+          };
+
+          return [...conditions, cachedData];
+        });
+      });
+    }
+   }
 
   addCurrentConditions(zipcode: string): void {
     // We first search for conditions in the cache
@@ -48,6 +65,7 @@ export class WeatherService {
   }
 
   getCurrentConditions(): Signal<ConditionsAndZip[]> {
+    console.log(this.currentConditions.asReadonly()())
     return this.currentConditions.asReadonly();
   }
 

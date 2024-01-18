@@ -3,7 +3,7 @@
     <ng-container *ngFor="let location of currentConditionsByZip()"
       (click)="showForecast(location.zip)"
     >
-      <app-custom-tab-body 
+      <app-custom-tab-body
         tabTitle="{{ location.data.name }} ({{ location.zip }})"
         (closeTab)="removeLocation($event)"
       >
