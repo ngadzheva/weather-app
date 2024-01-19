@@ -6,7 +6,7 @@ import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { WeatherService } from '../services/weather.service';
 import { Action, LocationService } from '../services/location.service';
 import { CacheService } from '../services/cache-service';
-import { CURRENT_CONDITIONS, FORECAST } from '../utils/cache-key.utility';
+import { CACHE_KEYS } from '../config/cache.config';
 import { WithUnsubscribe } from '../utils/with-unsubscribe';
 
 @Component({
@@ -37,8 +37,8 @@ export class CurrentConditionsComponent extends WithUnsubscribe() {
 
         this.weatherService.removeCurrentConditions(zipcode);
         // Remove the location from the cache as well
-        this.cacheService.removeItem(CURRENT_CONDITIONS, zipcode);
-        this.cacheService.removeItem(FORECAST, zipcode);
+        this.cacheService.removeItem(CACHE_KEYS.CURRENT_CONDITIONS, zipcode);
+        this.cacheService.removeItem(CACHE_KEYS.FORECAST, zipcode);
       }
     });
 

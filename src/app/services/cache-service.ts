@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { EXPIRATION_TIME } from '../expiration-time';
+import { CACHE_EXPIRATION_TIME } from '../config/cache.config';
 
 export interface CacheData {
   id: string;
@@ -21,7 +21,7 @@ export class CacheService {
     const cachedData = this.getCachedData(key);
 
     const currentTime = new Date().getTime();
-    const dataWithExpiration: CacheData = { ...data, expiration: new Date(currentTime + EXPIRATION_TIME) };
+    const dataWithExpiration: CacheData = { ...data, expiration: new Date(currentTime + CACHE_EXPIRATION_TIME) };
 
     cachedData.push(dataWithExpiration);
   

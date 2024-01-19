@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Forecast } from './forecast.type';
 import { WeatherService } from '../services/weather.service';
 import { CacheService } from '../services/cache-service';
-import { FORECAST } from '../utils/cache-key.utility';
+import { CACHE_KEYS } from '../config/cache.config';
 import { WithUnsubscribe } from 'app/utils/with-unsubscribe';
 
 @Component({
@@ -42,7 +42,7 @@ export class ForecastsListComponent extends WithUnsubscribe() {
    * Otherwise, we fetch the udpated forecast from the API and update the cache
    */
   private loadForecast() {
-    const cachedForecast = this.cacheService.getItem(FORECAST, this.zipcode);
+    const cachedForecast = this.cacheService.getItem(CACHE_KEYS.FORECAST, this.zipcode);
 
     if (cachedForecast) {
       this.forecast = cachedForecast.data as Forecast;
@@ -52,7 +52,7 @@ export class ForecastsListComponent extends WithUnsubscribe() {
       ).subscribe(data => {
         this.forecast = data;
 
-        this.cacheService.setItem(FORECAST, { id: this.zipcode, data });
+        this.cacheService.setItem(CACHE_KEYS.FORECAST, { id: this.zipcode, data });
       });
     }
   }

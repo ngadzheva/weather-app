@@ -6,7 +6,7 @@ import { CurrentConditions } from '../current-conditions/current-conditions.type
 import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { Forecast } from '../forecasts-list/forecast.type';
 import { CacheService } from './cache-service';
-import { CURRENT_CONDITIONS } from '../utils/cache-key.utility';
+import { CACHE_KEYS } from '../config/cache.config';
 import { WithUnsubscribe } from 'app/utils/with-unsubscribe';
 import { takeUntil } from 'rxjs/operators';
 
@@ -25,7 +25,7 @@ export class WeatherService extends WithUnsubscribe() {
 
     // If there is some cached data, we fetch it and
     // initialize the currentConditions array with it
-    this.cachedConditions = this.cacheService.getItems(CURRENT_CONDITIONS);
+    this.cachedConditions = this.cacheService.getItems(CACHE_KEYS.CURRENT_CONDITIONS);
 
     if (this.cachedConditions) {
       this.cachedConditions.forEach(cache => {
@@ -56,7 +56,7 @@ export class WeatherService extends WithUnsubscribe() {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe(data => {
           this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data }]);
-          this.cacheService.setItem(CURRENT_CONDITIONS, { id: zipcode, data });
+          this.cacheService.setItem(CACHE_KEYS.CURRENT_CONDITIONS, { id: zipcode, data });
         });
     }
   }
