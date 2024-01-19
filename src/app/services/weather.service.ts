@@ -7,10 +7,12 @@ import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { Forecast } from '../forecasts-list/forecast.type';
 import { CacheService } from './cache-service';
 import { CURRENT_CONDITIONS } from '../utils/cache-key.utility';
+import { WithUnsubscribe } from 'app/utils/with-unsubscribe';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Injectable()
-export class WeatherService {
+export class WeatherService extends WithUnsubscribe() {
 
   static URL = 'http://api.openweathermap.org/data/2.5';
   static APPID = '5a4b2d457ecbef9eb2a71e480b947604';
@@ -19,6 +21,8 @@ export class WeatherService {
   private cachedConditions;
 
   constructor(private http: HttpClient, private cacheService: CacheService) {
+    super();
+
     // If there is some cached data, we fetch it and
     // initialize the currentConditions array with it
     this.cachedConditions = this.cacheService.getItems(CURRENT_CONDITIONS);
@@ -49,6 +53,7 @@ export class WeatherService {
     } else {
       // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
       this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
+        .pipe(takeUntil(this.unsubscribe$))
         .subscribe(data => {
           this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data }]);
           this.cacheService.setItem(CURRENT_CONDITIONS, { id: zipcode, data });

@@ -1,21 +1,21 @@
-import { Component, inject, OnDestroy, Signal } from '@angular/core';
+import { Component, inject, Signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { WeatherService } from '../services/weather.service';
 import { Action, LocationService } from '../services/location.service';
 import { CacheService } from '../services/cache-service';
 import { CURRENT_CONDITIONS, FORECAST } from '../utils/cache-key.utility';
+import { WithUnsubscribe } from '../utils/with-unsubscribe';
 
 @Component({
   selector: 'app-current-conditions',
   templateUrl: './current-conditions.component.html',
   styleUrls: ['./current-conditions.component.css']
 })
-export class CurrentConditionsComponent implements OnDestroy {
+export class CurrentConditionsComponent extends WithUnsubscribe() {
 
-  private locationSubscription: Subscription;
   private weatherService = inject(WeatherService);
   private router = inject(Router);
   private cacheService = inject(CacheService);
@@ -23,8 +23,12 @@ export class CurrentConditionsComponent implements OnDestroy {
   protected currentConditionsByZip: Signal<ConditionsAndZip[]> = this.weatherService.getCurrentConditions();
 
   constructor() {
+    super();
+
     // Subscribe to the locations observable and listen for its events
-    this.locationSubscription = this.locationService.getLocation().subscribe((location) => {
+    this.locationService.getLocation().pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe((location) => {
       if (location.action === Action.ADD) {
         if (!this.currentConditionsByZip().find(conditions => conditions.zip === location.zipcode))
           this.weatherService.addCurrentConditions(location.zipcode);
@@ -41,10 +45,6 @@ export class CurrentConditionsComponent implements OnDestroy {
     // Load the locations after we have
     // subscribed to the location observable
     this.locationService.loadLocations();
-  }
-
-  ngOnDestroy(): void {
-    this.locationSubscription.unsubscribe();
   }
 
   showForecast(zipcode : string){

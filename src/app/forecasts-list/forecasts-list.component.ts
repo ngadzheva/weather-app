@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 import { Forecast } from './forecast.type';
 import { WeatherService } from '../services/weather.service';
 import { CacheService } from '../services/cache-service';
 import { FORECAST } from '../utils/cache-key.utility';
+import { WithUnsubscribe } from 'app/utils/with-unsubscribe';
 
 @Component({
   selector: 'app-forecasts-list',
   templateUrl: './forecasts-list.component.html',
   styleUrls: ['./forecasts-list.component.css']
 })
-export class ForecastsListComponent {
+export class ForecastsListComponent extends WithUnsubscribe() {
 
   zipcode: string;
   forecast: Forecast;
@@ -23,10 +25,10 @@ export class ForecastsListComponent {
     private cacheService: CacheService,
     private location: Location
   ) {
-    route.params.subscribe(params => {
-      this.zipcode = params['zipcode'];
-      this.loadForecast();
-    });
+    super();
+
+    this.zipcode = route.snapshot.params['zipcode'];
+    this.loadForecast();
   }
 
   goBack() {
@@ -45,7 +47,9 @@ export class ForecastsListComponent {
     if (cachedForecast) {
       this.forecast = cachedForecast.data as Forecast;
     } else {
-      this.weatherService.getForecast(this.zipcode).subscribe(data => {
+      this.weatherService.getForecast(this.zipcode).pipe(
+        takeUntil(this.unsubscribe$)
+      ).subscribe(data => {
         this.forecast = data;
 
         this.cacheService.setItem(FORECAST, { id: this.zipcode, data });
