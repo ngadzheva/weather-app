@@ -1,7 +1,7 @@
-import { AfterContentChecked, AfterContentInit, Component, ContentChildren, Input, QueryList } from '@angular/core';
+import { AfterContentChecked, Component, ContentChildren, Input, QueryList } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { UITabItemComponent } from './ui-tab-item/ui-tab-item.component';
-import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({

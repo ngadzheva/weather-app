@@ -21,7 +21,7 @@ export class WeatherService {
   constructor(private http: HttpClient, private cacheService: CacheService) {
     // If there is some cached data, we fetch it and
     // initialize the currentConditions array with it
-    this.cachedConditions = this.cacheService.getItem(CURRENT_CONDITIONS) || [];
+    this.cachedConditions = this.cacheService.getItems(CURRENT_CONDITIONS);
 
     if (this.cachedConditions) {
       this.cachedConditions.forEach(cache => {
@@ -51,7 +51,7 @@ export class WeatherService {
       this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
         .subscribe(data => {
           this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data }]);
-          this.cacheService.setItem(CURRENT_CONDITIONS, JSON.stringify({ id: zipcode, data }));
+          this.cacheService.setItem(CURRENT_CONDITIONS, { id: zipcode, data });
         });
     }
   }

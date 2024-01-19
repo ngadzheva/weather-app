@@ -40,15 +40,15 @@ export class ForecastsListComponent {
    * Otherwise, we fetch the udpated forecast from the API and update the cache
    */
   private loadForecast() {
-    const cachedForecast = this.cacheService.getItem(FORECAST).find(forecast => forecast.id === this.zipcode);
+    const cachedForecast = this.cacheService.getItem(FORECAST, this.zipcode);
 
     if (cachedForecast) {
-      this.forecast = cachedForecast.data;
+      this.forecast = cachedForecast.data as Forecast;
     } else {
       this.weatherService.getForecast(this.zipcode).subscribe(data => {
         this.forecast = data;
 
-        this.cacheService.setItem(FORECAST, JSON.stringify({ id: this.zipcode, data }));
+        this.cacheService.setItem(FORECAST, { id: this.zipcode, data });
       });
     }
   }

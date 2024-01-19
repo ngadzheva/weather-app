@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   templateUrl: './min-max-temperature.component.html'
 })
 export class MinMaxTemperatureComponent {
-    @Input() min: number;
-    @Input() max: number;
-    @Input() withHyphen: boolean = false;
+  @Input() min: number;
+  @Input() max: number;
+  @Input() withHyphen: boolean = false;
 }
