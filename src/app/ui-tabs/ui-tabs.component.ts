@@ -19,16 +19,16 @@ export class UITabsComponent implements AfterContentChecked {
   ngAfterContentChecked() {
     // Set the last active tab using the url hash
     // If there is no hash, activate the first tab
-    if (this.route.snapshot.fragment) {
+    if (this.route.snapshot.fragment && this.tabs.length > 0) {
       const fragment = this.route.snapshot.fragment;
       this.activeTab = this.tabs.find(tab => this.extractHash(tab.tabTitle) === fragment);
-      this.activeTab.active = true;
+
+      this.setActiveTab();
     } else {
       this.activeTab = this.tabs.first;
-      if (this.activeTab) {
-        this.activeTab.active = true;
-        this.router.navigateByUrl('#' + this.extractHash(this.activeTab.tabTitle));
-      }
+
+      this.setActiveTab();
+      this.setActiveTabHash();
     }
   }
 
@@ -51,9 +51,9 @@ export class UITabsComponent implements AfterContentChecked {
       }
 
       this.activeTab = this.tabs.get(tabIndex > 0 ? tabIndex - 1 : tabIndex + 1);
-      this.activeTab.active = true;
 
-      this.router.navigateByUrl('#' + this.extractHash(this.activeTab.tabTitle));
+      this.setActiveTab();
+      this.setActiveTabHash();
     }
   }
 
@@ -64,8 +64,21 @@ export class UITabsComponent implements AfterContentChecked {
     });
 
     this.activeTab = tab;
-    this.activeTab.active = true;
-    // Set hash to the url in order to remember the active tab
-    this.router.navigateByUrl('#' + this.extractHash(this.activeTab.tabTitle));
+
+    this.setActiveTab();
+    this.setActiveTabHash();
+  }
+
+  // Helper method for remembering the selected tab with a hash in the url
+  private setActiveTabHash() {
+    if (this.activeTab) {
+      this.router.navigateByUrl('#' + this.extractHash(this.activeTab.tabTitle));
+    }
+  }
+
+  private setActiveTab() {
+    if (this.activeTab) {
+      this.activeTab.active = true;
+    }
   }
 }
