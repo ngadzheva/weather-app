@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChildren, Input, QueryList } from '@angular/core';
+import { AfterContentChecked, AfterContentInit, Component, ContentChildren, Input, QueryList } from '@angular/core';
 
 import { UITabItemComponent } from './ui-tab-item/ui-tab-item.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,14 +9,14 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './ui-tabs.component.html',
   styleUrls: ['./ui-tabs.component.css']
 })
-export class UITabsComponent implements AfterContentInit {
+export class UITabsComponent implements AfterContentChecked {
   @Input() extractHash: (key: string) => string;
   @ContentChildren(UITabItemComponent) tabs!: QueryList<UITabItemComponent>;
   activeTab: UITabItemComponent;
 
   constructor(private route: ActivatedRoute, private router: Router) { }
 
-  ngAfterContentInit() {
+  ngAfterContentChecked() {
     // Set the last active tab using the url hash
     // If there is no hash, activate the first tab
     if (this.route.snapshot.fragment) {
@@ -25,8 +25,10 @@ export class UITabsComponent implements AfterContentInit {
       this.activeTab.active = true;
     } else {
       this.activeTab = this.tabs.first;
-      this.activeTab.active = true;
-      this.router.navigateByUrl('#' + this.extractHash(this.activeTab.tabTitle));
+      if (this.activeTab) {
+        this.activeTab.active = true;
+        this.router.navigateByUrl('#' + this.extractHash(this.activeTab.tabTitle));
+      }
     }
   }
 
@@ -37,8 +39,22 @@ export class UITabsComponent implements AfterContentInit {
     // the corresponding location as well
     tab.closeTab.emit(tabIndex);
 
-    // Make the previous tab active
-    this.tabs.get(tabIndex - 1).active = true;
+    const wasActive = tab.active;
+
+    // If the removed tab was active
+    // we set the previous one or the next one
+    // (if it was the first tab) to active
+    if (wasActive) {
+      // If it was the only tab, remove the hash from the url
+      if (this.tabs.length === 1) {
+        this.router.navigateByUrl('/');
+      }
+
+      this.activeTab = this.tabs.get(tabIndex > 0 ? tabIndex - 1 : tabIndex + 1);
+      this.activeTab.active = true;
+
+      this.router.navigateByUrl('#' + this.extractHash(this.activeTab.tabTitle));
+    }
   }
 
   // Activate the current tab and show its content
