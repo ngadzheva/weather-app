@@ -10,8 +10,9 @@ export class ZipcodeEntryComponent {
 
   constructor(private locationService : LocationService) { }
 
-  addLocation(zipcode : string) {
-    this.locationService.addLocation(zipcode);
+  addLocation(zipcode: HTMLInputElement) {
+    this.locationService.addLocation(zipcode.value);
+    zipcode.value = '';
   }
 
 }
