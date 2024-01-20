@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ng-weather": {
+    "weather-app": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -58,18 +58,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "ng-weather:build"
+            "buildTarget": "weather-app:build"
           },
           "configurations": {
             "production": {
-              "buildTarget": "ng-weather:build:production"
+              "buildTarget": "weather-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "ng-weather:build"
+            "buildTarget": "weather-app:build"
           }
         },
         "test": {
@@ -93,7 +93,7 @@
         }
       }
     },
-    "ng-weather-e2e": {
+    "weather-app-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -102,7 +102,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "ng-weather:serve"
+            "devServerTarget": "weather-app:serve"
           }
         }
       }
