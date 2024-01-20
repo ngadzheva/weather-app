@@ -603,7 +603,7 @@ var WeatherService_1;
 
 let WeatherService = class WeatherService extends (0,_utils_with_unsubscribe__WEBPACK_IMPORTED_MODULE_2__.WithUnsubscribe)() {
   static #_ = WeatherService_1 = this;
-  static #_2 = this.URL = 'http://api.openweathermap.org/data/2.5';
+  static #_2 = this.URL = 'https://api.openweathermap.org/data/2.5';
   static #_3 = this.APPID = '5a4b2d457ecbef9eb2a71e480b947604';
   static #_4 = this.ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
   constructor(http, cacheService) {
