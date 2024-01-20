@@ -1,14 +1,14 @@
 import { Injectable, Signal, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { CurrentConditions } from '../current-conditions/current-conditions.type';
 import { ConditionsAndZip } from '../conditions-and-zip.type';
 import { Forecast } from '../forecasts-list/forecast.type';
 import { CacheService } from './cache-service';
 import { CACHE_KEYS } from '../config/cache.config';
-import { WithUnsubscribe } from 'app/utils/with-unsubscribe';
-import { takeUntil } from 'rxjs/operators';
+import { WithUnsubscribe } from '../utils/with-unsubscribe';
 
 
 @Injectable()
@@ -32,7 +32,7 @@ export class WeatherService extends WithUnsubscribe() {
         this.currentConditions.update(conditions => {
           const cachedData = {
             zip: cache.id,
-            data: cache.data
+            data: cache.data as CurrentConditions
           };
 
           return [...conditions, cachedData];
@@ -49,7 +49,7 @@ export class WeatherService extends WithUnsubscribe() {
     // we use them for updating the currentConditions array
     // Otherwise, we fetch the current conditions from the API and update the cache
     if (cachedZipConditions) {
-      this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data: cachedZipConditions.data }]);
+      this.currentConditions.update(conditions => [...conditions, { zip: zipcode, data: cachedZipConditions.data as CurrentConditions }]);
     } else {
       // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
       this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
@@ -80,7 +80,7 @@ export class WeatherService extends WithUnsubscribe() {
     return this.http.get<Forecast>(`${WeatherService.URL}/forecast/daily?zip=${zipcode},us&units=imperial&cnt=5&APPID=${WeatherService.APPID}`);
   }
 
-  getWeatherIcon(id): string {
+  getWeatherIcon(id: number): string {
     if (id >= 200 && id <= 232)
       return WeatherService.ICON_URL + 'art_storm.png';
     else if (id >= 501 && id <= 511)

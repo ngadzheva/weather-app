@@ -10,9 +10,9 @@ import { UITabItemComponent } from './ui-tab-item/ui-tab-item.component';
   styleUrls: ['./ui-tabs.component.css']
 })
 export class UITabsComponent implements AfterContentChecked {
-  @Input() extractHash: (key: string) => string;
+  @Input() extractHash!: (key: string) => string;
   @ContentChildren(UITabItemComponent) tabs!: QueryList<UITabItemComponent>;
-  activeTab: UITabItemComponent;
+  activeTab?: UITabItemComponent;
 
   constructor(private route: ActivatedRoute, private router: Router) { }
 
@@ -37,9 +37,9 @@ export class UITabsComponent implements AfterContentChecked {
 
     // Emit the tab index to remove
     // the corresponding location as well
-    tab.closeTab.emit(tabIndex);
+    tab?.closeTab.emit(tabIndex);
 
-    const wasActive = tab.active;
+    const wasActive = tab?.active;
 
     // If the removed tab was active
     // we set the previous one or the next one

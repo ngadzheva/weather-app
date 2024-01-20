@@ -7,7 +7,7 @@ import { Forecast } from './forecast.type';
 import { WeatherService } from '../services/weather.service';
 import { CacheService } from '../services/cache-service';
 import { CACHE_KEYS } from '../config/cache.config';
-import { WithUnsubscribe } from 'app/utils/with-unsubscribe';
+import { WithUnsubscribe } from '../utils/with-unsubscribe';
 
 @Component({
   selector: 'app-forecasts-list',
@@ -17,7 +17,7 @@ import { WithUnsubscribe } from 'app/utils/with-unsubscribe';
 export class ForecastsListComponent extends WithUnsubscribe() {
 
   zipcode: string;
-  forecast: Forecast;
+  forecast?: Forecast;
 
   constructor(
     protected weatherService: WeatherService,

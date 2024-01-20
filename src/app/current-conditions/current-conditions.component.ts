@@ -58,7 +58,9 @@ export class CurrentConditionsComponent extends WithUnsubscribe() {
   }
 
   // Helper method for setting the zipcode to the url hash
-  extractHash(tabTitle: string) {
-    return tabTitle.match(/\(([^)]+)\)/)[1];
+  extractHash(tabTitle?: string) {
+    const matches = tabTitle?.match(/\(([^)]+)\)/);
+
+    return matches ? matches[1] : '';
   }
 }

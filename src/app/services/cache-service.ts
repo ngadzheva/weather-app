@@ -35,9 +35,9 @@ export class CacheService {
    * @param key - the key with which data will be searched in the local storage
    * @returns the cached data if it is not expired, otherwise, returns null
    */
-  getItem(key: string, id: string): CacheData {
+  getItem(key: string, id: string): CacheData | undefined {
     const cachedData: CacheData[] = this.getItems(key);
-    const cachedItem: CacheData = cachedData.find(data => data.id === id);
+    const cachedItem: CacheData | undefined = cachedData.find(data => data.id === id);
 
     return cachedItem;
   }
@@ -61,6 +61,6 @@ export class CacheService {
   }
 
   private getCachedData(key: string): CacheData[] {
-    return JSON.parse(localStorage.getItem(key)) || [];
+    return JSON.parse(localStorage.getItem(key) ?? '[]');
   }
 }

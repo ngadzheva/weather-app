@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./ui-tab-item.component.css']
 })
 export class UITabItemComponent {
-  @Input() tabTitle: string;
+  @Input() tabTitle?: string;
   @Output() closeTab = new EventEmitter<number>();
 
   active = false;
