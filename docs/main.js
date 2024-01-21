@@ -927,10 +927,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ 2484);
 
-function WithUnsubscribe(Base = class {}) {
-  return class extends Base {
+function WithUnsubscribe() {
+  return class Base {
     constructor() {
-      super(...arguments);
       this.unsubscribe$ = new rxjs__WEBPACK_IMPORTED_MODULE_0__.Subject();
     }
     ngOnDestroy() {
