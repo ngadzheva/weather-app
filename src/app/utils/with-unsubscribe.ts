@@ -1,8 +1,8 @@
-import { OnDestroy, Type } from "@angular/core";
+import { OnDestroy } from "@angular/core";
 import { Subject } from "rxjs";
 
-export function WithUnsubscribe<T extends Type<{}>>(Base: T = class {} as any) {
-    return class extends Base implements OnDestroy {
+export function WithUnsubscribe() {
+    return class Base implements OnDestroy {
         protected unsubscribe$ = new Subject<void>();
 
         ngOnDestroy(): void {
