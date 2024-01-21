@@ -10,7 +10,7 @@ import { UITabItemComponent } from './ui-tab-item/ui-tab-item.component';
   styleUrls: ['./ui-tabs.component.css']
 })
 export class UITabsComponent implements AfterContentChecked {
-  @Input() extractHash!: (key: string) => string;
+  @Input() extractHash!: (key?: string) => string;
   @ContentChildren(UITabItemComponent) tabs!: QueryList<UITabItemComponent>;
   activeTab?: UITabItemComponent;
 
