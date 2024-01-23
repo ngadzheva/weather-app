@@ -55,7 +55,7 @@ export class CacheService {
 
   getItems(key: string): CacheData[] {
     const cachedData: CacheData[] = this.getCachedData(key);
-    const notExpired = cachedData.filter(data => new Date(Date.parse(data.expiration as string)) <= new Date());
+    const notExpired = cachedData.filter(data => new Date(Date.parse(data.expiration as string)) >= new Date());
 
     return notExpired;
   }
