@@ -445,7 +445,12 @@ let CacheService = class CacheService {
       ...data,
       expiration: new Date(currentTime + _config_cache_config__WEBPACK_IMPORTED_MODULE_0__.CACHE_EXPIRATION_TIME)
     };
-    cachedData.push(dataWithExpiration);
+    const existingDataId = cachedData.findIndex(existingData => existingData.id === data.id);
+    if (existingDataId !== -1) {
+      cachedData[existingDataId] = dataWithExpiration;
+    } else {
+      cachedData.push(dataWithExpiration);
+    }
     localStorage.setItem(key, JSON.stringify(cachedData));
   }
   /**
