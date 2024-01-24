@@ -22,8 +22,13 @@ export class CacheService {
 
     const currentTime = new Date().getTime();
     const dataWithExpiration: CacheData = { ...data, expiration: new Date(currentTime + CACHE_EXPIRATION_TIME) };
+    const existingDataId = cachedData.findIndex(existingData => existingData.id === data.id);
 
-    cachedData.push(dataWithExpiration);
+    if (existingDataId !== -1) {
+      cachedData[existingDataId] = dataWithExpiration;
+    } else {
+      cachedData.push(dataWithExpiration);
+    }
   
     localStorage.setItem(key, JSON.stringify(cachedData));
   }
